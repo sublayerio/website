@@ -2,7 +2,7 @@ name: Build Website Client
 
 on:
   release:
-    type:
+    types:
       - created
       
 jobs:
