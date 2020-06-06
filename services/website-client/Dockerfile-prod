@@ -30,8 +30,16 @@ ENV REACT_APP_ENVIRONMENT=production
 # npm start
 RUN yarn build
 
-# We start our application by calling
-# npm start
-CMD ["yarn", "serve"]
+# We move the build application
+# to an nginx build
+FROM nginx:1.16.0-alpine
 
-EXPOSE 3000
+COPY --from=build /app/build /usr/share/nginx/html
+
+RUN rm /etc/nginx/conf.d/default.conf
+
+COPY nginx/nginx.conf /etc/nginx/conf.d
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
