@@ -1,9 +1,9 @@
-name: Build Notu Client
+name: Build Website Client
 
 on:
-  push:
-    tags:
-      - v*.*.*
+  release:
+    type:
+      - created
       
 jobs:
   build-website-client:
