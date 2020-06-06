@@ -1,0 +1,37 @@
+FROM node:10 as build
+
+# WORKDIR specifies the directory our
+# application's code will live within
+WORKDIR /app
+
+# We copy our package.json file to our
+# app directory
+COPY package.json /app
+
+# We then run npm install to install
+# the npm dependencies for our application
+RUN yarn install
+
+# We then copy the rest of our application
+# To the app directory
+COPY . /app
+
+# Copy package.json so it can be read in the application
+COPY package.json /app/src
+
+# General
+ENV REACT_APP_VERSION=1
+ENV REACT_APP_CLIENT_URL=https://sublayer.io
+ENV REACT_APP_API_URL=https://api.sublayer.io
+
+ENV REACT_APP_ENVIRONMENT=production
+
+# We start our application by calling
+# npm start
+RUN yarn build
+
+# We start our application by calling
+# npm start
+CMD ["yarn", "serve"]
+
+EXPOSE 3000

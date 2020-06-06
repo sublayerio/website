@@ -1,0 +1,25 @@
+name: Build Notu Client
+
+on:
+  push:
+    tags:
+      - v*.*.*
+      
+jobs:
+  build-website-client:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set environment variables
+        id: vars
+        run: |
+          echo ::set-output name=tag::$(echo ${GITHUB_REF:10})
+          echo ::set-output name=releaseDate::$(date -u +"%FT%T.000Z")
+      - name: Build the Docker image
+        working-directory: ./services/website-client
+        run: docker build . --file Dockerfile-prod --tag sublayer/website-client:${{ steps.vars.outputs.tag }}
+      - name: Login into Docker Registry
+        run: docker login -u sublayer -p ${{ secrets.DOCKER_PASSWORD }}
+      - name: Push image to Docker Registry
+        run: docker push sublayer/website-client:${{ steps.vars.outputs.tag }}
