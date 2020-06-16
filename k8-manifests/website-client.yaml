@@ -26,7 +26,7 @@ spec:
     spec:
       containers:
         - name: website-client
-          image: docker.pkg.github.com/sublayerio/website/website-client:v1.0.3
+          image: sublayer/website-client:v1.0.4
           imagePullPolicy: Always
           ports:
             - containerPort: 80

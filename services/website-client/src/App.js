@@ -1,94 +1,49 @@
-import React from "react";
-import { css } from "emotion";
+import React, { useState, useEffect } from "react";
+import { css, keyframes } from "emotion";
+import axios from 'axios'
 import "./styles.css";
 
-const components = [
-  {
-    color: "rgba(255, 1, 5, 1.00)",
-    title: "Magic Link",
-    url: "https://github.com/sublayerio/magic-link",
-    status: "concept",
-    description:
-      "Make passwords redundant. Let users sign in using magic links."
-  },
-  {
-    color: "hsl(131, 72%, 51%)",
-    title: "Webpage to PDF",
-    url: "https://github.com/sublayerio/webpage-to-pdf",
-    status: "dev-ready",
-    description: "Turn webpages into PDF's using Chrome's headless API."
-  },
-  {
-    color: "rgb(0, 189, 248)",
-    title: "Webpage to Image",
-    url: "https://github.com/sublayerio/webpage-to-image",
-    status: "dev-ready",
-    description: "Make screenshots of webpages using Chrome's headless API."
-  },
-  {
-    color: "#6f42c1",
-    title: "Message Service",
-    status: "concept",
-    description:
-      "Send messages via multiple channels. E-mail, SMS, Slack, Webhook, Monday, etc."
-  },
-  {
-    color: "rgb(0, 153, 255)",
-    title: "Message Preview",
-    status: "concept",
-    description: "Preview and interact with dynamic message templates."
-  },
-  {
-    color: "rgb(238, 228, 217)",
-    title: "Task Manager",
-    status: "concept",
-    description:
-      "Monitor (recurrent) tasks that have been added to a Bull queue."
-  },
-  {
-    color: "rgb(170, 34, 170)",
-    title: "Frame",
-    status: "concept",
-    description:
-      "Quickly display relational data. Extend with custom components."
-  },
-  {
-    color: "rgb(26, 187, 156)",
-    title: "Schema",
-    status: "concept",
-    description: "Capture your data model in a schema."
-  },
-  {
-    color: "rgb(51, 33, 153)",
-    title: "Schema to GraphQL",
-    status: "concept",
-    description: "Auto-generate a GraphQL API of your schema."
-  },
-  {
-    color: "rgb(251, 80, 59)",
-    title: "Webhook Box",
-    status: "concept",
-    description: "Capture webhooks and redirect them."
-  },
-  {
-    color: "rgb(166, 88, 147)",
-    title: "Data Table",
-    status: "concept",
-    description: "Display, filter and sort your data across devices."
-  },
-  {
-    color: "rgb(20, 46, 103)",
-    title: "Fields",
-    status: "concept",
-    description: "Intuitively display and edit your pieces of data."
-  },
-  {
-    color: "#000",
-    title: "Search",
-    status: "concept",
-    description: "Search for data based on your schema."
-  }
-];
+const pulsate = keyframes`
+0% {
+  transform: scale(1);
+  opacity: 0;
+}
+50% {
+  opacity: 0.5;
+}
+100% {
+  transform: scale(2.5);
+  opacity: 0;
+}
+`
+
+const repo = props => (
+  <svg {...props} viewBox="0 0 24 24" version="1.1" fill="currentColor"><path fillRule="evenodd" d="M3 2.75A2.75 2.75 0 015.75 0h14.5a.75.75 0 01.75.75v20.5a.75.75 0 01-.75.75h-6a.75.75 0 010-1.5h5.25v-4H6A1.5 1.5 0 004.5 18v.75c0 .716.43 1.334 1.05 1.605a.75.75 0 01-.6 1.374A3.25 3.25 0 013 18.75v-16zM19.5 1.5V15H6c-.546 0-1.059.146-1.5.401V2.75c0-.69.56-1.25 1.25-1.25H19.5z"></path><path d="M7 18.25a.25.25 0 01.25-.25h5a.25.25 0 01.25.25v5.01a.25.25 0 01-.397.201l-2.206-1.604a.25.25 0 00-.294 0L7.397 23.46a.25.25 0 01-.397-.2v-5.01z"></path></svg>
+)
+
+const link = props => (
+  <svg {...props} viewBox="0 0 16 16" version="1.1" fill="currentColor"><path fill-rule="evenodd" d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"></path></svg>
+)
+
+const book = props => (
+  <svg {...props} xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" viewBox="0 0 16 16"><path fillRule="evenodd" d="M3 5h4v1H3V5zm0 3h4V7H3v1zm0 2h4V9H3v1zm11-5h-4v1h4V5zm0 2h-4v1h4V7zm0 2h-4v1h4V9zm2-6v9c0 .55-.45 1-1 1H9.5l-1 1l-1-1H2c-.55 0-1-.45-1-1V3c0-.55.45-1 1-1h5.5l1 1l1-1H15c.55 0 1 .45 1 1zm-8 .5L7.5 3H2v9h6V3.5zm7-.5H9.5l-.5.5V12h6V3z" fill="currentColor" /></svg>
+)
+
+const eye = props => (
+  <svg {...props} xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" viewBox="0 0 16 16"><path fillRule="evenodd" d="M8.06 2C3 2 0 8 0 8s3 6 8.06 6C13 14 16 8 16 8s-3-6-7.94-6zM8 12c-2.2 0-4-1.78-4-4c0-2.2 1.8-4 4-4c2.22 0 4 1.8 4 4c0 2.22-1.78 4-4 4zm2-4c0 1.11-.89 2-2 2c-1.11 0-2-.89-2-2c0-1.11.89-2 2-2c1.11 0 2 .89 2 2z" fill="currentColor" /></svg>
+)
+
+const pkg = props => (
+  <svg {...props} xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1 4.27v7.47c0 .45.3.84.75.97l6.5 1.73c.16.05.34.05.5 0l6.5-1.73c.45-.13.75-.52.75-.97V4.27c0-.45-.3-.84-.75-.97l-6.5-1.74a1.4 1.4 0 0 0-.5 0L1.75 3.3c-.45.13-.75.52-.75.97zm7 9.09l-6-1.59V5l6 1.61v6.75zM2 4l2.5-.67L11 5.06l-2.5.67L2 4zm13 7.77l-6 1.59V6.61l2-.55V8.5l2-.53V5.53L15 5v6.77zm-2-7.24L6.5 2.8l2-.53L15 4l-2 .53z" fill="currentColor" /></svg>
+)
+
+const icons = {
+  pkg,
+  repo,
+  link,
+  eye,
+  book
+}
 
 const library = props => (
   <svg
@@ -397,6 +352,50 @@ const Hero = () => (
   </div>
 );
 
+const LinkButton = ({ type, url, title }) => {
+
+  const icon = icons[type] || icons.link
+
+  return (
+    <div
+      className={css`
+      flex: 1;
+      border-left: 2px solid rgb(255,245,247);
+      &:first-child {
+        border-left: none;
+      }
+      `}
+    >
+      <a
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        title={title}
+        className={css`
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 44px;
+        padding: 0 16px;
+        text-decoration: none;
+        color: #000;
+        background-color: rgba(255, 255, 255, 1);
+        &:hover {
+          background-color: rgba(255, 255, 255, 0.75);
+        }
+      `}
+      >
+        {icon({ height: 12 })}
+        <div className={css`margin-left: 8px;`}>
+          {title}
+        </div>
+      </a>
+    </div>
+
+  )
+}
+
 const DarkSection = () => (
   <div
     className={css`
@@ -432,24 +431,8 @@ const DarkSection = () => (
   </div>
 );
 
-const Badge = ({ color, children }) => (
-  <span
-    className={css`
-      background-color: ${children === "concept"
-        ? "#f9f9f9"
-        : "hsl(131,72%,51%)"};
-      color: ${children === "concept" ? "#000" : "#fff"};
-      padding: 2px 9px;
-      border-radius: 4px;
-      font-size: 12px;
-    `}
-  >
-    {children}
-  </span>
-);
-
-const ComponentItem = ({ title, description, color, status, url }) => (
-  <a
+const ComponentItem = ({ title, description, color, status, links }) => (
+  <div
     className={css`
       width: 100%;
       height: 100%;
@@ -459,43 +442,39 @@ const ComponentItem = ({ title, description, color, status, url }) => (
       user-select: none;
       color: inherit;
     `}
-    target="_blank"
-    href={url}
-    rel="noopener noreferrer"
   >
     <div
       className={css`
-        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.02), 0 0 8px 0 rgba(0, 0, 0, 0.01),
-          2px 4px 8px 0 rgba(0, 48, 111, 0.04);
-        background-color: #fff;
-        padding: 16px;
         border-radius: 8px;
         width: 100%;
         height: 100%;
         cursor: pointer;
-        border: 2px solid transparent;
-        &:hover {
-          border: 2px solid #bd1e59;
-        }
+        overflow: hidden;
+        background-color: ${links ? 'transparent' : '#fff'};
       `}
     >
       <div
         className={css`
-          position: relative;
-          margin-bottom: 32px;
-        `}
+        padding: 16px;
+        background-color: #fff;
+      `}
       >
         <div
           className={css`
+          position: relative;
+          margin-bottom: 32px;
+        `}
+        >
+          <div
+            className={css`
             /* border-radius: 16px;
-            background-color: #fff;
             border: 1px solid #ebebeb;
             padding: 8px;
             display: inline-block; */
           `}
-        >
-          <div
-            className={css`
+          >
+            <div
+              className={css`
               border-radius: 50%;
               background-color: ${color};
               width: 60px;
@@ -505,69 +484,188 @@ const ComponentItem = ({ title, description, color, status, url }) => (
               justify-content: center;
               color: #fff;
             `}
+            >
+              {box({ width: 24 })}
+            </div>
+          </div>
+          <div
+            className={css`
+            position: absolute;
+            top: 0;
+            right: 0;
+            display: flex;
+            align-items: center;
+            color: ${status === 'released' ? 'rgb(0, 204, 136)' : status === 'development' ? 'rgb(255, 170, 0)' : 'rgb(255, 85, 153)'};
+          `}
           >
-            {box({ width: 24 })}
+            <div
+              className={css`
+                      flex-shrink: 0;
+                        background-color: currentColor;
+                        width: 8px;
+                        height: 8px;
+                        border-radius: 50%;
+                        position: relative;
+                        &:before {
+                          width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    content: "";
+    border-radius: 100%;
+    border: 2px solid currentColor;
+    box-sizing: border-box;
+    animation: ${pulsate} 1.5s ease-out;
+    animation-iteration-count: infinite;
+    animation-delay: 1.1s;
+                        }
+                      `}
+            />
+            <div
+              className={css`font-size: 12px; margin-left: 8px;`}
+            >
+              {status}
+            </div>
           </div>
         </div>
         <div
           className={css`
-            position: absolute;
-            top: 0;
-            right: 0;
-          `}
-        >
-          <Badge>{status}</Badge>
-        </div>
-      </div>
-      <div
-        className={css`
           margin-left: 8px;
         `}
-      >
-        <div
-          className={css`
+        >
+          <div
+            className={css`
             font-weight: 800;
             font-size: 18px;
             margin-bottom: 4px;
           `}
-        >
-          {title}
-        </div>
-        <div
-          className={css`
+          >
+            {title}
+          </div>
+          <div
+            className={css`
             color: #666;
           `}
-        >
-          {description}
+          >
+            {description}
+          </div>
         </div>
       </div>
-    </div>
-  </a>
-);
+      {links ? (
+        <div
+          className={css`
+              display: flex;
+              justify-content: space-around;
+              border-top: 2px solid rgb(255,245,247);
+            `}
+        >
+          {links.map((link, index) => {
 
-const ComponentsSection = () => (
-  <div
-    className={css`
-      background-color: #fff5f7;
-      padding-top: var(--section-padding);
-      padding-bottom: var(--section-padding);
-    `}
-  >
-    <div className="container">
-      <div className="row">
-        {components.map((component, index) => {
-          return (
-            <div className="col-md-4" key={index}>
-              <ComponentItem {...component} />
-            </div>
-          );
-        })}
-      </div>
+            return (
+              <LinkButton key={index} {...link} />
+            )
+          })}
+        </div>
+      ) : null}
     </div>
   </div>
 );
 
+const ComponentsList = ({ title, components }) => (
+  <div>
+    <h3 className={css`font-weight: 600; font-size: 26px; font-family: geomanistregular, sans-serif;`}>{title}</h3>
+    <div className="row">
+      {components.map((component, index) => {
+        return (
+          <div className="col-md-4" key={index}>
+            <ComponentItem {...component} />
+          </div>
+        );
+      })}
+    </div>
+  </div>
+)
+
+
+
+const ComponentsSection = () => {
+
+  const [sections, setSections] = useState(null)
+
+  useEffect(() => {
+    (async () => {
+      const response = await axios.request({
+        method: 'get',
+        url: 'https://cdn.sublayer.io/sublayer-website.json',
+        headers: {
+          Origin: window.location.origin
+        }
+      });
+
+      const sectionData = response.data.reduce((result, component) => {
+
+        return component.labels.reduce((result, label) => {
+  
+          let section = result.find(s => {
+            return s.title === label
+          })
+  
+          if (!section) {
+            section = {
+              title: label,
+              components: []
+            }
+            result.push(section)
+          }
+  
+          section.components.push(component)
+  
+          return result
+  
+        }, result)
+  
+      }, [])
+      setSections(sectionData)
+    })();
+  }, [])
+
+  return (
+    <div
+      className={css`
+    background-color: rgb(255, 245, 247);
+      padding-top: var(--section-padding);
+      padding-bottom: var(--section-padding);
+    `}
+    >
+      <div className="container">
+        <h2 className={css`font-weight: 900; font-size: 47px; font-family: geomanistregular, sans-serif;`}>
+          Components
+      </h2>
+        {sections ? (
+          <div>
+            {sections.map(section => {
+
+              return (
+                <ComponentsList
+                  title={section.title}
+                  components={section.components}
+                />
+              )
+            })}
+          </div>
+        ) : (
+            <div>
+              Loading...
+            </div>
+          )}
+      </div>
+    </div >
+  );
+}
+
 export default function App() {
+
   return (
     <div
       className={css`

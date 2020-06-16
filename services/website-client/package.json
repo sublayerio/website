@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
+    "axios": "^0.19.2",
     "bootstrap-4-grid": "3.4.0",
     "emotion": "10.0.27",
     "normalize.css": "8.0.1",
