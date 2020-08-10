@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { css, keyframes } from "emotion";
-import axios from 'axios'
+// import axios from 'axios'
+import data from './data.json'
 import "./styles.css";
 
 const pulsate = keyframes`
@@ -595,15 +596,15 @@ const ComponentsSection = () => {
 
   useEffect(() => {
     (async () => {
-      const response = await axios.request({
-        method: 'get',
-        url: 'https://cdn.sublayer.io/sublayer-website.json',
-        headers: {
-          Origin: window.location.origin
-        }
-      });
+      // const response = await axios.request({
+      //   method: 'get',
+      //   url: 'https://cdn.sublayer.io/sublayer-website.json',
+      //   headers: {
+      //     Origin: window.location.origin
+      //   }
+      // });
 
-      const sectionData = response.data.reduce((result, component) => {
+      const sectionData = data.reduce((result, component) => {
 
         return component.labels.reduce((result, label) => {
   
